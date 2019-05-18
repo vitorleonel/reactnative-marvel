@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator, StatusBar } from "react-native";
+import { connect } from "react-redux";
 
 import { Container, Heroes, Hero } from "./styles";
 import api from "../../services/api";
 
 import HeroDetail from "../HeroDetail";
 
-export default function App() {
-  const [heroes, setHeroes] = useState([]);
+function App({ heroes, getHeroes }) {
   const [hero, setHero] = useState(null);
 
   useEffect(() => {
@@ -15,18 +15,18 @@ export default function App() {
   }, [hero]);
 
   useEffect(() => {
-    fetchHeroes();
+    getHeroes();
   }, []);
 
-  async function fetchHeroes() {
-    try {
-      const {
-        data: { data }
-      } = await api.get("/v1/public/characters");
+  // async function fetchHeroes() {
+  //   try {
+  //     const {
+  //       data: { data }
+  //     } = await api.get("/v1/public/characters");
 
-      setHeroes(data.results);
-    } catch (error) {}
-  }
+  //     setHeroes(data.results);
+  //   } catch (error) {}
+  // }
 
   function renderHero({ item }) {
     return (
@@ -62,3 +62,16 @@ export default function App() {
     </Container>
   );
 }
+
+const mapStateToProps = state => ({
+  heroes: state.heroes
+});
+
+const mapDispatchToProps = dispatch => ({
+  getHeroes: () => dispatch({ type: "setHeroes", payload: [] })
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
