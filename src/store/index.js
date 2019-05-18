@@ -1,19 +1,17 @@
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import createSagaMiddleware from "redux-saga";
 
-const INITIAL_STATE = {
-  heroes: [],
-  selectedHero: null
-};
+import rootReducer from "./reducers";
+import rootSaga from "./sagas";
 
-const reducer = (state = INITIAL_STATE, action) => {
-  switch (action.type) {
-    case "setHeroes":
-      return { ...state, heroes: [...state.heroes, ...action.payload] };
-    case "setHero":
-      return { ...state, selectedHero: action.payload };
-    default:
-      return state;
-  }
-};
+const middlewares = [];
+const sagaMiddleware = createSagaMiddleware();
 
-export default createStore(reducer);
+middlewares.push(sagaMiddleware);
+
+const composer = applyMiddleware(...middlewares);
+const store = createStore(rootReducer, composer);
+
+export default store;
+
+sagaMiddleware.run(rootSaga);

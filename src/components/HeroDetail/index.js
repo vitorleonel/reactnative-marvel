@@ -10,13 +10,16 @@ import {
   Description
 } from "./styles";
 
-export default function HeroDetail({ hero }) {
+import { connect } from "react-redux";
+import { setHero } from "../../store/actions";
+
+function HeroDetail({ hero, close }) {
   if (!hero) return <View />;
 
   return (
     <Container isVisible fullScreen>
       <>
-        <ArrowBack name="arrow-back" size={32} onPress={() => {}} />
+        <ArrowBack name="arrow-back" size={32} onPress={close} />
 
         <Header>
           <Image
@@ -51,3 +54,16 @@ export default function HeroDetail({ hero }) {
     </Container>
   );
 }
+
+const mapStateToProps = state => ({
+  hero: state.selectedHero
+});
+
+const mapDispatchToProps = {
+  close: () => setHero(null)
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HeroDetail);

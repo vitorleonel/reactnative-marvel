@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, StatusBar } from "react-native";
-import { connect } from "react-redux";
 
 import { Container, Heroes, Hero } from "./styles";
-import api from "../../services/api";
-
 import HeroDetail from "../HeroDetail";
 
-function App({ heroes, getHeroes }) {
-  const [hero, setHero] = useState(null);
+import { connect } from "react-redux";
+import { requestHeroes, setHero } from "../../store/actions";
 
+function App({ heroes, hero, getHeroes, selectHero }) {
   useEffect(() => {
     StatusBar.setBarStyle(hero ? "dark-content" : "light-content");
   }, [hero]);
@@ -17,16 +15,6 @@ function App({ heroes, getHeroes }) {
   useEffect(() => {
     getHeroes();
   }, []);
-
-  // async function fetchHeroes() {
-  //   try {
-  //     const {
-  //       data: { data }
-  //     } = await api.get("/v1/public/characters");
-
-  //     setHeroes(data.results);
-  //   } catch (error) {}
-  // }
 
   function renderHero({ item }) {
     return (
@@ -39,7 +27,7 @@ function App({ heroes, getHeroes }) {
         subtitle={
           item.description ? item.description : "Descrição não encontrada."
         }
-        onPress={() => setHero(item)}
+        onPress={() => selectHero(item)}
       />
     );
   }
@@ -58,18 +46,20 @@ function App({ heroes, getHeroes }) {
         <ActivityIndicator color="#ffffff" size="large" />
       )}
 
-      <HeroDetail hero={hero} />
+      <HeroDetail />
     </Container>
   );
 }
 
 const mapStateToProps = state => ({
-  heroes: state.heroes
+  heroes: state.heroes,
+  hero: state.selectedHero
 });
 
-const mapDispatchToProps = dispatch => ({
-  getHeroes: () => dispatch({ type: "setHeroes", payload: [] })
-});
+const mapDispatchToProps = {
+  getHeroes: (offset = 0) => requestHeroes(offset),
+  selectHero: hero => setHero(hero)
+};
 
 export default connect(
   mapStateToProps,
