@@ -1,17 +1,12 @@
-import React, { useEffect } from "react";
-import { View } from "react-native";
+import React from "react";
+import { ThemeProvider } from "react-native-elements";
 
-import api from "./services/api";
+import App from "./components/App";
 
-// import { Container } from './styles';
-
-export default function App() {
-  useEffect(() => {
-    api
-      .get("v1/public/characters")
-      .then(data => console.log(data))
-      .catch(error => console.log(error));
-  });
-
-  return <View />;
+export default function Main() {
+  return (
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  );
 }
