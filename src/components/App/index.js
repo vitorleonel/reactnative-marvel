@@ -7,7 +7,7 @@ import HeroDetail from "../HeroDetail";
 import { connect } from "react-redux";
 import { requestHeroes, setHero } from "../../store/actions";
 
-function App({ heroes, hero, getHeroes, selectHero }) {
+function App({ heroes, hero, pagination, getHeroes, selectHero }) {
   useEffect(() => {
     StatusBar.setBarStyle(hero ? "dark-content" : "light-content");
   }, [hero]);
@@ -15,6 +15,12 @@ function App({ heroes, hero, getHeroes, selectHero }) {
   useEffect(() => {
     getHeroes();
   }, []);
+
+  function loadMore() {
+    if (pagination.offset >= pagination.total) return;
+
+    getHeroes(pagination.offset + 20);
+  }
 
   function renderHero({ item }) {
     return (
@@ -41,19 +47,21 @@ function App({ heroes, hero, getHeroes, selectHero }) {
           keyExtractor={(_, index) => index.toString()}
           data={heroes}
           renderItem={renderHero}
+          onEndReached={loadMore}
         />
       ) : (
         <ActivityIndicator color="#ffffff" size="large" />
       )}
 
-      <HeroDetail />
+      {hero && <HeroDetail />}
     </Container>
   );
 }
 
 const mapStateToProps = state => ({
   heroes: state.heroes,
-  hero: state.selectedHero
+  hero: state.selectedHero,
+  pagination: state.pagination
 });
 
 const mapDispatchToProps = {
