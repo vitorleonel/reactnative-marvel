@@ -1,4 +1,4 @@
-export const requestHeroes = (offset = 0) => ({
+export const requestHeroes = offset => ({
   type: "requestHeroes",
   offset
 });
